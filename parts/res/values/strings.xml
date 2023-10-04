@@ -15,6 +15,9 @@
      limitations under the License.
 -->
 <resources>
+    <!-- Xiaomi Parts -->
+    <string name="app_name">Xiaomi Parts</string>
+
     <!-- Dirac settings -->
     <string name="dirac_enable">Enable dirac</string>
     <string name="dirac_title">Dirac™ Sound</string>
@@ -105,4 +108,13 @@
     <string name="refresh_standard">60 Hz</string>
     <string name="refresh_high">90 Hz</string>
     <string name="refresh_extreme">120 Hz</string>
+
+    <!-- Dolby Atmos -->
+    <string name="dolby_title">Dolby Atmos</string>
+    <string name="dolby_enable">Use Dolby Atmos</string>
+    <string name="dolby_profile_title">Choose a profile</string>
+    <string name="dolby_profile_dynamic">Dynamic</string>
+    <string name="dolby_off">Off</string>
+    <string name="dolby_on">On</string>
+    <string name="dolby_on_with_profile">On (%1$s)</string>
 </resources>

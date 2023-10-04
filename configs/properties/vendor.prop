@@ -18,7 +18,7 @@ persist.vendor.audio.spv3.enable=true
 persist.vendor.audio.avs.afe_api_version=2
 vendor.audio.tunnel.encode=false
 persist.vendor.audio.ras.enabled=false
-vendor.audio.offload.buffer.size.kb=32
+vendor.audio.offload.buffer.size.kb=256
 audio.offload.video=true
 vendor.audio.offload.track.enable=true
 audio.deep_buffer.media=true
@@ -36,8 +36,6 @@ vendor.audio.use.sw.alac.decoder=true
 vendor.audio.use.sw.ape.decoder=true
 vendor.audio.use.sw.mpegh.decoder=true
 vendor.audio.hw.aac.encoder=false
-audio.sys.noisy.broadcast.delay=600
-audio.sys.offload.pstimeout.secs=3
 ro.af.client_heap_size_kbyte=7168
 vendor.audio_hal.in_period_size=144
 vendor.audio_hal.period_multiplier=3
@@ -51,8 +49,6 @@ debug.stagefright.omx_default_rank=0
 vendor.audio.hal.output.suspend.supported=true
 vendor.audio.enable.mirrorlink=false
 persist.vendor.audio.voicecall.speaker.stereo=true
-persist.vendor.bt.aac_frm_ctl.enabled=true
-persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
 persist.vendor.audio.ha_proxy.enabled=true
 vendor.audio.hdr.record.enable=false
 ro.audio.monitorRotation=true
@@ -64,8 +60,6 @@ ro.vendor.audio.multiroute=true
 ro.vendor.audio.game.mode=true
 ro.vendor.audio.policy.engine.odm=true
 ro.vendor.audio.aiasst.support=true
-persist.audio.button_jack.profile=volume
-persist.audio.button_jack.switch=0
 vendor.audio.lowpower=false
 vendor.audio.spkcal.copy.inhal=true
 ro.vendor.audio.ring.filter=true
@@ -78,6 +72,12 @@ ro.vendor.audio.notify5Point1InUse=true
 ro.vendor.audio.us.proximity=false
 vendor.audio.ultrasound.stoplatency=60
 vendor.audio.ultrasound.usync=1000
+ro.audio.usb.period_us=20375
+af.resampler.quality=7
+ro.audio.resampler.psd.stopband=132
+ro.audio.resampler.psd.halflength=960
+ro.audio.resampler.psd.cutoff_percent=98
+ro.audio.resampler.psd.tbwcheat=0
 ro.vendor.audio.soundtrigger=sva
 ro.vendor.audio.soundtrigger.lowpower=true
 ro.vendor.audio.soundtrigger.training.level=50
@@ -180,23 +180,17 @@ bluetooth.profile.pan.nap.enabled=true
 bluetooth.profile.pan.panu.enabled=true
 bluetooth.profile.pbap.server.enabled=true
 bluetooth.profile.sap.server.enabled=false
-persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac-lhdc
 ro.bluetooth.a2dp_offload.supported=true
 persist.bluetooth.a2dp_offload.disabled=false
-persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac-lhdc
+persist.bluetooth.sbc_hd_higher_bitrate=1
 persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac-aptxadaptiver2
 persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
+persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 persist.vendor.qcom.bluetooth.a2dp_mcast_test.enabled=false
 persist.vendor.qcom.bluetooth.scram.enabled=false
-persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=true
-persist.sys.fflag.override.settings_bluetooth_hearing_aid=true
 ro.vendor.bluetooth.csip_qti=true
-
-# Audio steps
-ro.config.vc_call_vol_steps=11
-ro.config.media_vol_steps=25
 
 # Camera
 camera.disable_zsl_mode=true
@@ -261,11 +255,16 @@ ro.vendor.thermal.dimming.enable=true
 ro.vendor.fps.switch.thermal=true
 ro.vendor.mi_sf.ultimate.perf.support=true
 ro.vendor.mi_sf.skip_90hz_forVrrVote=true
+ro.sf.force_hwc_brightness=1
 persist.vendor.dc_backlight.enable=false
 persist.vendor.dc_backlight.threshold=0
 
-# Dolby
+# Dolby Music
 ro.vendor.dolby.dax.version=DAX3_3.6.1.6_r1
+
+# Dolby Vision
+ro.vendor.audio.dolby.vision.support=true
+debug.config.media.video.dolby_vision_suports=true
 
 # DPM
 persist.vendor.dpm.vndr.idletimer.mode=default
@@ -291,7 +290,7 @@ persist.sys.sf.native_mode=258
 debug.cpurend.vsync=false
 debug.sf.hw=0
 debug.egl.hw=0
-ddebug.sf.auto_latch_unsignaled=1
+debug.sf.auto_latch_unsignaled=true
 debug.sf.high_fps_late_app_phase_offset_ns=1000000
 debug.sf.high_fps_late_sf_phase_offset_ns=-2000000
 debug.sf.high_fps_early_phase_offset_ns=-4000000
@@ -321,6 +320,7 @@ vendor.gralloc.disable_ubwc=0
 ro.surface_flinger.set_display_power_timer_ms=1000
 ro.surface_flinger.set_idle_timer_ms=80
 ro.surface_flinger.set_touch_timer_ms=200
+debug.sf.frame_rate_multiple_threshold=120
 
 # Haptics
 sys.haptic.motor=linear
@@ -352,6 +352,9 @@ sys.haptic.intensityforkeyboard=true
 # Incremental
 ro.incremental.enable=yes
 
+# HWUI
+ro.hwui.render_ahead=10
+
 # LMK
 persist.sys.lmk.camera_minfree_levels=18432:0,23040:100,27648:200,64512:300,115712:800,216370:900
 persist.sys.lmkd.double_watermark.enable=true
@@ -359,7 +362,6 @@ persist.sys.lmkd.extend_reclaim.enable=true
 
 # Media
 debug.c2.use_dmabufheaps=1
-debug.config.media.video.dolby_vision_suports=true
 debug.mdpcomp.logs=0
 debug.stagefright.omx_default_rank=0
 debug.stagefright.c2inputsurface=-1
@@ -388,9 +390,6 @@ ro.vendor.perf.scroll_opt.heavy_app=2
 vendor.power.pasr.enabled=false
 vendor.pasr.activemode.enabled=false
 
-# QCOM
-persist.vendor.qcomsysd.enabled=1
-
 # QFP
 persist.vendor.qfp=true
 
@@ -405,6 +404,7 @@ persist.vendor.radio.sib16_support=1
 persist.vendor.radio.custom_ecc=1
 persist.vendor.radio.procedure_bytes=SKIP
 persist.vendor.radio.enableadvancedscan=true
+persist.vendor.radio.redir_party_num=0
 
 # RCS
 persist.vendor.rcs.singlereg.feature=1

@@ -25,8 +25,11 @@ import android.util.Log;
 import android.view.Display.HdrCapabilities;
 import android.view.SurfaceControl;
 
-import org.lineageos.settings.dirac.DiracUtils;
+import org.lineageos.settings.camera.NfcCameraService;
+import org.lineageos.settings.display.ColorService;
+import org.lineageos.settings.dolby.DolbyUtils;
 import org.lineageos.settings.doze.DozeUtils;
+import org.lineageos.settings.doze.PocketService;
 import org.lineageos.settings.refreshrate.RefreshUtils;
 import org.lineageos.settings.thermal.ThermalUtils;
 
@@ -37,18 +40,12 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (!intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            return;
-        }
-        if (DEBUG)
-            Log.d(TAG, "Received boot completed intent");
+        if (!intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) return;
 
-        // Dirac
-        try {
-            DiracUtils.getInstance(context);
-        } catch (Exception e) {
-            Log.d(TAG, "Dirac is not present in system");
-        }
+        if (DEBUG) Log.d(TAG, "Received boot completed intent");
+
+        // Dolby Atmos
+        DolbyUtils.getInstance(context).onBootCompleted();
 
         // Doze
         DozeUtils.checkDozeService(context);
@@ -58,6 +55,15 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
         // Thermal Profiles
         ThermalUtils.startService(context);
+
+        // Pocket
+        PocketService.startService(context);
+
+        // DisplayFeature
+        ColorService.startService(context);
+
+        // NFC
+        NfcCameraService.startService(context);
 
         // Override HDR types
         final IBinder displayToken = SurfaceControl.getInternalDisplayToken();

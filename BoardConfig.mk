@@ -75,6 +75,11 @@ TARGET_USES_HWC2 := true
 MAX_VIRTUAL_DISPLAY_DIMENSION := 4096
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 
+# Dolby Vision
+SOONG_CONFIG_NAMESPACES += dolby_vision
+SOONG_CONFIG_dolby_vision += enabled
+SOONG_CONFIG_dolby_vision_enabled := true
+
 # DRM
 TARGET_ENABLE_MEDIADRM_64 := true
 
@@ -88,7 +93,7 @@ TARGET_INIT_VENDOR_LIB := //$(DEVICE_PATH):init_xiaomi_marble
 TARGET_RECOVERY_DEVICE_MODULES ?= init_xiaomi_marble
 
 # Filesystem
-TARGET_FS_CONFIG_GEN := $(CONFIGS_PATH)/config.fs
+TARGET_FS_CONFIG_GEN := $(CONFIGS_PATH)/config/config.fs
 
 # Kernel
 BOARD_KERNEL_PAGESIZE := 4096
